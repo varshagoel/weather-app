@@ -1,0 +1,156 @@
+
+<mat-toolbar color="primary">
+  <span class="app-title">Weather App</span>
+  <span class="spacer"></span>
+  <button mat-icon-button [routerLink]="['/']" matTooltip="Weather">
+    <mat-icon style="color: white;">cloud</mat-icon>
+  </button>
+  <button mat-icon-button [routerLink]="['/favorites']" matTooltip="Favorites">
+    <mat-icon style="color: red;">bookmark</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div class="container">
+  <mat-form-field>
+    <input matInput placeholder="Enter city" [(ngModel)]="query"/>
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="selectCity(query)">Search</button>
+
+
+  <!-- <mat-card *ngIf="selectedCity" class="weather-card">
+    <mat-card-header>
+      <mat-card-title>Current Conditions for {{ selectedCity.LocalizedName }}</mat-card-title>
+      <mat-card-subtitle>
+        Observed at: {{ currentCondition.LocalObservationDateTime | date:'shortTime' }} on {{ currentCondition.LocalObservationDateTime | date:'mediumDate' }}
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="weather-summary">
+        <img *ngIf="currentCondition.WeatherIcon"
+             [src]="'assets/weather-icons/' + currentCondition.WeatherIcon + '.png'"
+             [alt]="currentCondition.WeatherText + ' icon'"
+             class="weather-icon">
+        <p class="weather-text">{{ currentCondition.WeatherText }}</p>
+        <p class="temperature">
+          {{ currentCondition.Temperature.Imperial.Value }}
+          <sup>&deg;</sup>{{ currentCondition.Temperature.Imperial.Unit }}
+          <span class="metric-temp">
+            ({{ currentCondition.Temperature.Metric.Value }}
+            <sup>&deg;</sup>{{ currentCondition.Temperature.Metric.Unit }})
+          </span>
+        </p>
+      </div>
+  
+      <mat-divider></mat-divider>
+  
+      <p>
+        Time of day: <strong>{{ currentCondition.IsDayTime ? 'Day' : 'Night' }}</strong>
+      </p>
+      <p>
+        Precipitation: <strong>{{ currentCondition.HasPrecipitation ? 'Yes' : 'No' }}</strong>
+        <span *ngIf="currentCondition.PrecipitationType">
+          ({{ currentCondition.PrecipitationType }})
+        </span>
+      </p>
+  
+      <a [href]="currentCondition.Link" target="_blank" class="accuweather-link">
+        View full forecast on AccuWeather <mat-icon fontIcon="launch"></mat-icon>
+      </a>
+    </mat-card-content>
+  
+    <mat-card-actions class="card-actions">
+      <ng-container>
+        <button mat-raised-button color="accent"
+                (click)="saveToFavorites()"
+                *ngIf="selectedCity.isFavorite">
+          <mat-icon>favorite_border</mat-icon> Add to Favorites
+        </button>
+        <button mat-raised-button color="warn"
+                (click)="removeFromFavorites()"
+                *ngIf="selectedCity.isFavorite">
+          <mat-icon>favorite</mat-icon> Remove from Favorites
+        </button>
+      </ng-container>
+    </mat-card-actions>
+  </mat-card>
+   -->
+  <!-- <mat-card *ngIf="currentCondition" class="weather-card">
+    <mat-card-header>
+      <mat-card-title>Current Conditions for {{this.selectedCity.LocalizedName}}</mat-card-title>
+      </mat-card-header>
+    <mat-card-content>
+      <p>
+        {{ currentCondition.WeatherText }}
+        <span *ngIf="currentCondition.Temperature">
+          - {{ currentCondition.Temperature.Imperial.Value }}
+          {{ currentCondition.Temperature.Imperial.Unit }}
+        </span>
+      </p>
+      <p>
+        Observed at: {{ currentCondition.LocalObservationDateTime | date:'medium' }}
+        </p>
+      </mat-card-content>
+  </mat-card> -->
+
+   <!-- Suggestions List -->
+   <!-- <mat-list role="list" *ngIf="suggestions.length">
+    <div mat-subheader>Cities</div>
+    <mat-list-item *ngFor="let city of suggestions" role="listitem"  (click)="selectCity(city)">
+      <div matListItemTitle>{{ city.LocalizedName }}</div>
+      <div matListItemLine>{{ city.Country.LocalizedName}}</div>
+    </mat-list-item>
+  </mat-list> -->
+   <!-- <ul *ngIf="suggestions.length" class="suggestions-list">
+    <li
+      *ngFor="let city of suggestions"
+      (click)="selectCity(city)"
+      class="suggestion-item"
+    >
+      {{ city.LocalizedName }}, {{ city.Country.LocalizedName }}
+    </li>
+  </ul> -->
+
+  <mat-card *ngIf="selectedCity">
+    <mat-card-header>
+      <mat-card-title>Current Weather in {{selectedCity.name}}</mat-card-title>
+      <mat-card-actions>
+        <button mat-icon-button color="warn" (click)="toggleFavorite(selectedCity)" aria-label="Favorite">
+          <mat-icon>{{ selectedCity.isFavorite ? 'favorite' : 'favorite_border' }}</mat-icon>
+        </button>
+      </mat-card-actions>
+      <mat-card-subtitle>{{ selectedCity.currentCondition.LocalObservationDateTime | date:'short' }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p><strong>Condition:</strong> {{ selectedCity.currentCondition.WeatherText }}</p>
+      <p><strong>Temperature:</strong> {{ selectedCity.currentCondition.Temperature.Metric.Value }}°{{ selectedCity.currentCondition.Temperature.Metric.Unit }}</p>
+      <p><strong>Daytime:</strong> {{ selectedCity.currentCondition.IsDayTime ? 'Yes' : 'No' }}</p>
+      <a mat-button href="{{ selectedCity.currentCondition.Link }}" target="_blank">More Details</a>
+    </mat-card-content>
+  </mat-card>
+  
+  <!-- <mat-divider></mat-divider> -->
+  
+  <mat-card class="forecast-card">
+    <mat-card-header>
+      <mat-card-title>5-Day Forecast</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-accordion>
+        <mat-expansion-panel *ngFor="let day of selectedCity.forecast.DailyForecasts">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ day.Date | date:'fullDate' }} - {{ day.Day.IconPhrase }}
+            </mat-panel-title>
+            <mat-panel-description>
+              High: {{ day.Temperature.Maximum.Value }}°C, Low: {{ day.Temperature.Minimum.Value }}°C
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <p><strong>Day:</strong> {{ day.Day.IconPhrase }}</p>
+          <p><strong>Night:</strong> {{ day.Night.IconPhrase }}</p>
+          <a mat-button href="{{ day.Link }}" target="_blank">View Details</a>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </mat-card-content>
+  </mat-card>
+  
+</div>

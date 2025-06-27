@@ -1,0 +1,23 @@
+<mat-toolbar color="primary">
+  <span class="app-title">Favorites</span>
+  <span class="spacer"></span>
+  <button mat-icon-button [routerLink]="['/']" matTooltip="Weather">
+    <mat-icon style="color: white;">cloud</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div *ngFor="let item of favorites">
+  <mat-card [routerLink]="['/weather', item.name]">
+    <mat-card-header>
+      <mat-card-title>Current Weather in {{item.name}}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p><strong>Condition:</strong> {{ item.currentCondition.WeatherText }}</p>
+      <p><strong>Temperature:</strong> {{ item.currentCondition.Temperature.Metric.Value }}°{{ item.currentCondition.Temperature.Metric.Unit }}</p>
+      <p><strong>Daytime:</strong> {{ item.currentCondition.IsDayTime ? 'Yes' : 'No' }}</p>
+      <a mat-button href="{{ item.currentCondition.Link }}" target="_blank">More Details</a>
+    </mat-card-content>
+  </mat-card>
+  <mat-divider></mat-divider>
+</div>
+
