@@ -37,8 +37,6 @@ interface SelectedCity {
   templateUrl: './weather-page.component.html'
 })
 export class WeatherPageComponent {
-  query = 'New york';
-  suggestions: any[] = [];
   
   selectedCity: SelectedCity = {
     key : '',
@@ -50,26 +48,12 @@ export class WeatherPageComponent {
 
   constructor(private weatherService: WeatherService,private route: ActivatedRoute) {}
 
-  // searchCity() {
-  //   console.log('Query changed:', this.query);  // <-- Debug line
-  //   if(this.query.length > 2){
-  //     this.weatherService.getCitySuggestions(this.query).subscribe(
-  //       res => {
-  //         console.log('Suggestions:', res);
-  //         this.suggestions = res;
-  //       },
-  //       err => console.error('API error:', err)
-  //     );
-  //   }
-  // }
-
   ngOnInit(): void {
     let cityName = this.route.snapshot.paramMap.get('city')!;
     this.selectCity(cityName ? cityName: 'New york');
   }
 
   selectCity(cityName: string){
-    // this.selectedCity.isFavorite = false;
     this.weatherService.getCitySuggestions(cityName).subscribe(locations => {
       if (locations.length > 0) {
         const locationKey = locations[0].Key;
